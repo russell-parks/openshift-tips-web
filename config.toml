@@ -1,4 +1,4 @@
-baseURL = "https://openshift.tips/"
+baseURL = "https://openshift-tips.rezzell.com/"
 languageCode = "en-us"
 title = "OpenShift Tips"
 theme = "techdoc"

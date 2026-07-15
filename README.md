@@ -1,9 +1,7 @@
 This is now archived.
 
 
-# [openshift.tips](https://openshift.tips)
-
-[![Netlify Status](https://api.netlify.com/api/v1/badges/e9d32213-2089-4328-b53e-bb6b15efd960/deploy-status)](https://app.netlify.com/sites/openshifttips/deploys)
+# [OpenShift Tips](https://openshift-tips.rezzell.com)
 
 This site pretends to compile a list of OpenShift 4 tips, mainly one liners.
 
@@ -21,9 +19,19 @@ This site is based on:
 
 - [Hugo](https://gohugo.io) as the static site framework.
 - [Techdoc Hugo's theme](https://themes.gohugo.io/hugo-theme-techdoc/)
-- [GitHub](https://github.com/openshifttips/web) to host the git repository.
-- [Netlify](https://www.netlify.com) to run the builds and serve the content.
-- [Let's Encrypt](https://letsencrypt.org) (automated via Netlify) for the site certificates.
+- [GitHub](https://github.com/russell-parks/openshift-tips-web) to host the git repository.
+- [Cloudflare Pages](https://pages.cloudflare.com/) to run the builds and serve the content.
+- Cloudflare-managed certificates for the site TLS endpoint.
+
+Cloudflare Pages should deploy from `integration/latest` with:
+
+- Build command: `hugo --gc --minify -b "$CF_PAGES_URL"`
+- Build output directory: `public`
+- `HUGO_VERSION=0.55.6`
+- `HUGO_ENV=production`
+- `HUGO_ENABLEGITINFO=true`
+
+The production custom domain is expected to be `openshift-tips.rezzell.com`.
 
 Also, we use [ForwardEmail.net](https://forwardemail.net/).
 
