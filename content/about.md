@@ -36,9 +36,9 @@ This site is based on:
 
 - [Hugo](https://gohugo.io) as the static site framework.
 - [Techdoc Hugo's theme](https://themes.gohugo.io/hugo-theme-techdoc/)
-- [GitHub](https://github.com/openshifttips/web) to host the git repository.
-- [Netlify](https://www.netlify.com) to run the builds and serve the content.
-- [Let's Encrypt](https://letsencrypt.org) (automated via Netlify) for the site certificates.
+- [GitHub](https://github.com/russell-parks/openshift-tips-web) to host the git repository.
+- [Cloudflare Pages](https://pages.cloudflare.com/) to run the builds and serve the content.
+- Cloudflare-managed certificates for the site TLS endpoint.
 
 Also, we use [ForwardEmail.net](https://forwardemail.net/).
 
