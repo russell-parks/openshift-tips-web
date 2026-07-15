@@ -171,20 +171,7 @@ ARCH='amd64'
 curl -sH 'Accept: application/json' "https://api.openshift.com/api/upgrades_info/v1/graph?channel=${CHANNEL}&arch=${ARCH}" | jq -S '.nodes | sort_by(.version | sub ("-rc";"") | split(".") | map(tonumber)) | .[]'
 ```
 
-Output is a list of release graph nodes similar to:
-
-```
-{
-  "metadata": {
-    "description": "",
-    "io.openshift.upgrades.graph.release.channels": "stable-4.16",
-    "io.openshift.upgrades.graph.release.manifestref": "sha256:c5337afd85b94c93ec513f21c8545e3f9e36a227f55d41bc1dfb8fcc3f2be129",
-    "url": "https://access.redhat.com/errata/RHBA-2019:2922"
-  },
-  "payload": "quay.io/openshift-release-dev/ocp-release@sha256:c5337afd85b94c93ec513f21c8545e3f9e36a227f55d41bc1dfb8fcc3f2be129",
-  "version": "4.16.0"
-}
-```
+The output is a list of release graph nodes for the selected channel and architecture.
 
 This can be wrapped in a handy script such as:
 
