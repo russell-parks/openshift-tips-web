@@ -18,9 +18,9 @@ oc adm upgrade --to-latest
 - Get the hash of the image version
 
 ```
-CHANNEL='prerelease-4.1'
+CHANNEL='stable-4.16'
 ARCH='amd64'
-curl -sH 'Accept: application/json' "https://api.openshift.com/api/upgrades_info/v1/graph?channel=${CHANNEL}&${ARCH}" | jq .
+curl -sH 'Accept: application/json' "https://api.openshift.com/api/upgrades_info/v1/graph?channel=${CHANNEL}&arch=${ARCH}" | jq .
 ```
 
 - Apply the update
@@ -35,29 +35,16 @@ Kudos to [Ramon Gordillo](https://github.com/rgordill)
 
 Depending on the OCP version you can upgrade to some specific versions.
 
-For 4.1.10 for amd64:
+For a specific version and architecture:
 
 ```
-curl -s -XGET "https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.1&arch=amd64" --header 'Accept:application/json' |jq '. as $graph | $graph.nodes | map(.version == "4.1.10") | index(true) as $orig | $graph.edges | map(select(.[0] == $orig)[1]) | map($graph.nodes[.])'
+CHANNEL='stable-4.16'
+ARCH='amd64'
+VERSION='4.16.0'
+curl -sH 'Accept:application/json' "https://api.openshift.com/api/upgrades_info/v1/graph?channel=${CHANNEL}&arch=${ARCH}" | jq --arg VERSION "${VERSION}" '. as $graph | $graph.nodes | map(.version == $VERSION) | index(true) as $orig | $graph.edges | map(select(.[0] == $orig)[1]) | map($graph.nodes[.])'
 ```
 
-Output is something similar to:
-
-```
-[
-  {
-    "version": "4.1.11",
-    "payload": "quay.io/openshift-release-dev/ocp-release@sha256:bfca31dbb518b35f312cc67516fa18aa40df9925dc84fdbcd15f8bbca425d7ff",
-    "metadata": {
-      "description": "",
-      "url": "https://access.redhat.com/errata/RHBA-2019:2417",
-      "io.openshift.upgrades.graph.release.manifestref": "sha256:bfca31dbb518b35f312cc67516fa18aa40df9925dc84fdbcd15f8bbca425d7ff",
-      "io.openshift.upgrades.graph.release.channels": "stable-4.1"
-    }
-  }
-]
-
-```
+The output is a list of graph nodes that the selected version can upgrade to.
 
 # Switch OpenShift Channel and trigger a refresh
 
