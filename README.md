@@ -33,6 +33,12 @@ Cloudflare Pages should deploy from `integration/latest` with:
 
 The production custom domain is expected to be `openshift-tips.rezzell.com`.
 
+For a direct upload deployment with the pinned Hugo version:
+
+```
+make deploy
+```
+
 Also, we use [ForwardEmail.net](https://forwardemail.net/).
 
 Everything is free (as in beer) so anyone can build the same stuff at 0 cost :)
