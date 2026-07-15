@@ -162,25 +162,27 @@ echo "${REPOSITORY}/compare/${FROMCOMMIT:0:6}..${TOCOMMIT:0:6}#files_bucket"
 
 Kudos to [Ryan Howe](https://github.com/rjhowe)
 
-OCP4 is released in different 'channels' ("prerelease-4.1", "stable-4.1", "candidate-4.2", "fast-4.2", "stable-4.2",...) that contains different releases.
-In order to view the different releases and some information, the following snippet can be used (in this example the "stable-4.2" channel is used):
+OCP4 is released in different 'channels' ("candidate-4.16", "fast-4.16", "stable-4.16",...) that contains different releases.
+In order to view the different releases and some information, the following snippet can be used:
 
 ```
-curl -sH 'Accept: application/json' "https://api.openshift.com/api/upgrades_info/v1/graph?channel=stable-4.2&arch=amd64" | jq -S '.nodes | sort_by(.version | sub ("-rc";"") | split(".") | map(tonumber)) | .[]'
+CHANNEL='stable-4.16'
+ARCH='amd64'
+curl -sH 'Accept: application/json' "https://api.openshift.com/api/upgrades_info/v1/graph?channel=${CHANNEL}&arch=${ARCH}" | jq -S '.nodes | sort_by(.version | sub ("-rc";"") | split(".") | map(tonumber)) | .[]'
 ```
 
-Output:
+Output is a list of release graph nodes similar to:
 
 ```
 {
   "metadata": {
     "description": "",
-    "io.openshift.upgrades.graph.release.channels": "stable-4.2",
+    "io.openshift.upgrades.graph.release.channels": "stable-4.16",
     "io.openshift.upgrades.graph.release.manifestref": "sha256:c5337afd85b94c93ec513f21c8545e3f9e36a227f55d41bc1dfb8fcc3f2be129",
     "url": "https://access.redhat.com/errata/RHBA-2019:2922"
   },
   "payload": "quay.io/openshift-release-dev/ocp-release@sha256:c5337afd85b94c93ec513f21c8545e3f9e36a227f55d41bc1dfb8fcc3f2be129",
-  "version": "4.2.0"
+  "version": "4.16.0"
 }
 ```
 
@@ -189,22 +191,20 @@ This can be wrapped in a handy script such as:
 ```
 #!/bin/bash
 
-PS3='Please enter the channel: '
-options=("prerelease-4.1" "stable-4.1" "candidate-4.2" "fast-4.2" "stable-4.2")
-PS3='Please enter the arch: '
-options2=("amd64" "s390x" "ppc64le")
+channels=("candidate-4.16" "fast-4.16" "stable-4.16")
+arches=("amd64" "arm64" "ppc64le" "s390x")
 
 _Command () {
   echo "Showing upgrade channel: ${channel} arch: ${arch}"
   curl -sH 'Accept: application/json'  "https://api.openshift.com/api/upgrades_info/v1/graph?channel=${channel}&arch=${arch}" | jq -S '.nodes | sort_by(.version | sub ("-rc";"") | split(".") | map(tonumber)) | .[]'
 }
 
-select opt2 in "${options2[@]}"
+PS3='Please enter the architecture: '
+select arch in "${arches[@]}"
 do
-  select opt in "${options[@]}"
+  PS3='Please enter the channel: '
+  select channel in "${channels[@]}"
   do
-    channel="${opt}"
-    arch="${opt2}"
     _Command
     break
   done
