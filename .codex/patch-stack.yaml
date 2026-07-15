@@ -1,0 +1,73 @@
+version: 1
+
+upstream:
+  remote: upstream
+  branch: master
+
+integration:
+  branch: integration/latest
+
+features:
+  - id: bootstrap
+    branch: fork-maintenance/bootstrap
+    description: >
+      Bootstraps fork-maintenance metadata for this repository
+      with the patch stack definition used to rebuild integration/latest.
+    status: active
+    order: 0
+
+  - id: cloudflare-pages
+    branch: deploy/cloudflare-pages
+    description: >
+      Moves the archived Hugo site deployment guidance from Netlify
+      to Cloudflare Pages and sets the new production base URL.
+    status: active
+    order: 10
+    depends_on:
+      - bootstrap
+
+  - id: olm-operatorhub-sources
+    branch: tips/olm-operatorhub-sources
+    description: >
+      Preserves the useful OperatorHub default source disable tip
+      from the OLM contribution while removing stale older-catalog guidance.
+    status: active
+    order: 20
+    source_commits:
+      - 4fcc4996035567b580e272dd3d331c23d6ea3cad
+      - b027576a255199aa0e9485a090b2638faf203fa5
+    depends_on:
+      - cloudflare-pages
+
+  - id: certificates-inspection
+    branch: tips/certificates-inspection
+    description: >
+      Cleans up the API certificate inspection and etcd CA extraction tips.
+    status: active
+    order: 30
+    source_commits:
+      - db3156c
+    depends_on:
+      - olm-operatorhub-sources
+
+  - id: upgrade-graph-arch
+    branch: tips/upgrade-graph-arch
+    description: >
+      Fixes and modernizes the architecture parameter examples for
+      OpenShift update graph API calls.
+    status: active
+    order: 40
+    source_commits:
+      - 124bd68
+    depends_on:
+      - certificates-inspection
+
+  - id: drop-risky-storage-rebind
+    branch: tips/drop-risky-storage-rebind
+    description: >
+      Removes the app-specific retained-PV rebind procedure because it
+      is risky to republish as a general one-liner tip.
+    status: active
+    order: 50
+    depends_on:
+      - upgrade-graph-arch
