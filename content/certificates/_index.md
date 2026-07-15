@@ -106,11 +106,12 @@ oc whoami
 # Verify the API certificates
 
 ```
-echo | openssl s_client -connect api.ocp4.example.com:6443 | openssl x509 -noout -text
+API_HOST="api.ocp4.example.com"
+echo | openssl s_client -connect "${API_HOST}:6443" -servername "${API_HOST}" 2>/dev/null | openssl x509 -noout -text
 ```
 
 # Extract etcd CA
 
 ```
-oc get secrets -n openshift-config etcd-signer -o "jsonpath={.data['tls\.crt']}" |  base64 -d | openssl x509 -text
+oc get secret etcd-signer -n openshift-config -o jsonpath="{.data.tls\\.crt}" | base64 -d | openssl x509 -text -noout
 ```
