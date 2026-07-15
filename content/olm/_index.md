@@ -7,28 +7,20 @@ draft: false
 weight: 24
 ---
 
-# Disable all default sources
+# Disable default OperatorHub sources
+
+This is useful for disconnected, restricted, or curated clusters where you
+want to expose only the `CatalogSource` objects that your administrators
+explicitly manage.
+
+Disable the default OperatorHub sources:
 
 ```
 oc patch operatorhub.config.openshift.io/cluster -p='{"spec":{"disableAllDefaultSources":true}}' --type=merge
 ```
 
-# Use older version catalogs
-
-This is sometimes useful when you want to install older content on a newer cluster (or the riskier opposite option).
-
-I took a snapshot of the existing catalogsources
-and modified them to point to 4.9
-then disabled default sources
-and applied my non default sources (under the same names) this is the procedure:
+Re-enable the default sources:
 
 ```
-curl -s -L https://github.com/itaysk/kubectl-neat/releases/download/v2.0.3/kubectl-neat_linux_amd64.tar.gz | tar xvz -C ~/bin/
-oc project openshift-marketplace
-oc neat get catalogsource > sources.yml
-sed -i 's/v4.10/v4.9/g' sources.yml
-oc patch operatorhub.config.openshift.io/cluster -p='{"spec":{"disableAllDefaultSources":true}}' --type=merge
-oc apply -f sources.yml
+oc patch operatorhub.config.openshift.io/cluster -p='{"spec":{"disableAllDefaultSources":false}}' --type=merge
 ```
-
-I'm using neat to ease getting cluster resources without all the "junk" around them (so included here the command to download that plugin).
